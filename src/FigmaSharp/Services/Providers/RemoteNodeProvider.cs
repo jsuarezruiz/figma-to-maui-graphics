@@ -38,7 +38,7 @@ namespace FigmaSharp.Services
 
         public override string GetContentTemplate(string file)
         {
-            return AppContext.Api.GetContentFile(new FigmaFileQuery(file, Version));
+            return AppContext.Api.GetContentFileAsync(new FigmaFileQuery(file, Version)).GetAwaiter().GetResult();
         }
 
         public IEnumerable<string> GetKeys(List<FigmaImageResponse> responses, string image)
@@ -72,7 +72,7 @@ namespace FigmaSharp.Services
                     var ids = vectors.Select(s => CreateEmptyImageNodeRequest(s.Node))
                         .ToArray();
 
-                    var figmaImageResponse = AppContext.Api.GetImages(File, ids, imageFormat);
+                    var figmaImageResponse = AppContext.Api.GetImagesAsync(File, ids, imageFormat).GetAwaiter().GetResult();
                     if (figmaImageResponse != null)
                     {
                         foreach (var image in figmaImageResponse.images)

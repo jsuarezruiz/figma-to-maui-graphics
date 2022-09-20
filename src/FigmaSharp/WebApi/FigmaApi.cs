@@ -29,6 +29,7 @@ using FigmaSharp.Helpers;
 using FigmaSharp.Models;
 using Newtonsoft.Json;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace FigmaSharp
 {
@@ -47,9 +48,9 @@ namespace FigmaSharp
 
 		#endregion
 
-		public string GetContentFile (FigmaFileQuery figmaQuery)
+		public async Task<string> GetContentFileAsync (FigmaFileQuery figmaQuery)
 		{
-			var result = GetContentUrl (figmaQuery,
+			var result = await GetContentUrlAsync (figmaQuery,
 				(e) => {
 					var queryUrl = GetFigmaFileUrl (figmaQuery.FileId);
 					if (e.Version != null) {
@@ -61,38 +62,38 @@ namespace FigmaSharp
 			return result;
 		}
 
-		public string GetContentFileVersion (FigmaFileVersionQuery figmaQuery)
+		public async Task<string> GetContentFileVersionAsync (FigmaFileVersionQuery figmaQuery)
 		{
-			var result = GetContentUrl (figmaQuery,	(e) => GetFigmaFileVersionsUrl (e.FileId));
+			var result = await GetContentUrlAsync (figmaQuery,	(e) => GetFigmaFileVersionsUrl (e.FileId));
 			return result;
 		}
 
-		public FigmaFileResponse GetFile (FigmaFileQuery figmaQuery)
+		public async Task<FigmaFileResponse> GetFile (FigmaFileQuery figmaQuery)
 		{
-			var content = GetContentFile (figmaQuery);
+			var content = await GetContentFileAsync (figmaQuery);
 			return WebApiHelper.GetFigmaResponseFromFileContent (content);
 		}
 
-		public FigmaFileVersionResponse GetFileVersions (FigmaFileVersionQuery figmaQuery)
+		public async Task<FigmaFileVersionResponse> GetFileVersionsAsync (FigmaFileVersionQuery figmaQuery)
 		{
-			var content = GetContentFileVersion (figmaQuery);
+			var content = await GetContentFileVersionAsync (figmaQuery);
 			return WebApiHelper.GetFigmaResponseFromFileVersionContent (content);
 		}
 
 		#region Images
 
-		public FigmaImageResponse GetImages (string fileId, IImageNodeRequest[] resourceIds, ImageFormat format = ImageFormat.png, float scale = 2)
+		public async Task<FigmaImageResponse> GetImagesAsync (string fileId, IImageNodeRequest[] resourceIds, ImageFormat format = ImageFormat.png, float scale = 2)
 		{
 			var currentIds = resourceIds.Select(s => s.ResourceId).ToArray();
 			var query = new FigmaImageQuery (fileId, resourceIds);
 			query.Scale = scale;
 			query.Format = format;
-			return GetImage (query);
+			return await GetImageAsync (query);
 		}
 
-		public void ProcessDownloadImages (string fileId, IImageNodeRequest[] resourceIds, ImageFormat format = ImageFormat.png, float scale = 2)
+		public async Task ProcessDownloadImagesAsync (string fileId, IImageNodeRequest[] resourceIds, ImageFormat format = ImageFormat.png, float scale = 2)
 		{
-			var response = GetImages(fileId, resourceIds, format, scale);
+			var response = await GetImagesAsync(fileId, resourceIds, format, scale);
             foreach (var image in response.images)
             {
 				var resourceId = resourceIds.FirstOrDefault(s => s.ResourceId == image.Key);
@@ -101,9 +102,9 @@ namespace FigmaSharp
 			}
 		}
 
-		public FigmaImageResponse GetImage (FigmaImageQuery figmaQuery)
+		public async Task<FigmaImageResponse> GetImageAsync (FigmaImageQuery figmaQuery)
 		{
-			var result = GetContentUrl (figmaQuery,
+			var result = await GetContentUrlAsync (figmaQuery,
 				(e) => {
 					var figmaImageUrl = GetFigmaImageUrl (figmaQuery.FileId, figmaQuery.Ids);
 					var stringBuilder = new StringBuilder (figmaImageUrl);
@@ -121,7 +122,7 @@ namespace FigmaSharp
 			return JsonConvert.DeserializeObject<FigmaImageResponse> (result);
 		}
 
-		string GetContentUrl <T> (T figmaQuery, Func<T, string> handler) where T : FigmaApiBaseQuery
+		async Task<string> GetContentUrlAsync <T> (T figmaQuery, Func<T, string> handler) where T : FigmaApiBaseQuery
 		{
 			var token = string.IsNullOrEmpty (figmaQuery.PersonalAccessToken) ?
 	Token : figmaQuery.PersonalAccessToken;
@@ -133,10 +134,11 @@ namespace FigmaSharp
 			client.DefaultRequestHeaders.Add ("Accept", "application/json");
             client.DefaultRequestHeaders.Add("x-figma-token", token);
 
-			var response = client.GetAsync(query).GetAwaiter().GetResult();
-			var content = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+			var response = await client.GetAsync(query);
+			var content = await response.Content.ReadAsStringAsync();
+		
+			var json = Newtonsoft.Json.Linq.JObject.Parse(content);
 
-            var json = Newtonsoft.Json.Linq.JObject.Parse(content);
             return json.ToString();
 		}
 
