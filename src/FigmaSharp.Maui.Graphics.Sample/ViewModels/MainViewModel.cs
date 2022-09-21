@@ -16,6 +16,8 @@ namespace FigmaSharp.Maui.Graphics.Sample.ViewModels
         string _code;
         ObservableCollection<string> _log;
 
+        readonly Compiler _compiler;
+
         public MainViewModel()
         {
 #if DEBUG
@@ -25,6 +27,7 @@ namespace FigmaSharp.Maui.Graphics.Sample.ViewModels
             FileId = "";
 #endif
             Log = new ObservableCollection<string>();
+            _compiler = new Compiler();
         }
 
         public string Token
@@ -84,11 +87,11 @@ namespace FigmaSharp.Maui.Graphics.Sample.ViewModels
         {
             try
             {
-                if(string.IsNullOrEmpty(Token))
+                if (string.IsNullOrEmpty(Token))
                 {
                     var message = "In order to obtain the necessary information from Figma, it is necessary to use a Personal Access Token.";
                     Log.Add(message);
-                    DialogService.Instance.DisplayAlert("Information", message); 
+                    DialogService.Instance.DisplayAlert("Information", message);
                     return;
                 }
 
@@ -118,11 +121,7 @@ namespace FigmaSharp.Maui.Graphics.Sample.ViewModels
 
                 var stringBuilder = new StringBuilder();
 
-                string nodeName = "Add card";
-
-                Log.Add($"Looking for the {nodeName} node.");
-
-                var node = codeRenderer.FindNodeByName(nodeName);
+                var node = codeRenderer.NodeProvider.Nodes[0];
 
                 Log.Add($"Node {node.id} found successfully.");
 
@@ -137,8 +136,10 @@ namespace FigmaSharp.Maui.Graphics.Sample.ViewModels
                 Code = code;
 
                 Log.Add("Source Code generated successfully.");
+
+                await CompileCodeAsync();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log.Add(ex.Message);
             }
@@ -148,9 +149,41 @@ namespace FigmaSharp.Maui.Graphics.Sample.ViewModels
             }
         }
 
+        async Task CompileCodeAsync()
+        {
+            if (_compiler == null)
+                return;
+
+            Log.Add("Compiling the generated source code...");
+
+            string sourceCode = string.Format(@"         
+                using Microsoft.Maui.Graphics;
+
+                public void Draw(ICanvas canvas, RectF dirtyRect)
+                {{
+                {0}
+                }}", Code);
+
+            var compilationResult = await _compiler.CompileAsync(sourceCode);
+
+            if (compilationResult.HasErrors)
+            {
+                var compilationMessages = compilationResult.CompilationMessages;
+
+                foreach (var error in compilationMessages)
+                {
+                    Log.Add($"{error.DisplayMessage}");
+                }
+            }
+            else
+            {
+                Log.Add("Compilation completed successfully.");
+            }
+        }
+
         async Task Export()
         {
-            if(string.IsNullOrEmpty(Code))
+            if (string.IsNullOrEmpty(Code))
             {
                 string message = "The generated code is not correct.";
                 Log.Add(message);

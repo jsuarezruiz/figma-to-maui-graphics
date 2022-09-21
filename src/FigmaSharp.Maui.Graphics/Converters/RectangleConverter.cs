@@ -7,11 +7,11 @@ using System.Text;
 
 namespace FigmaSharp.Maui.Graphics.Converters
 {
-    public class FrameConverter : FrameConverterBase
+    internal class RectangleConverter : RectangleVectorConverterBase
     {
         public override string ConvertToCode(CodeNode currentNode, CodeNode parentNode, ICodeRenderService rendererService)
         {
-            if (currentNode.Node is not FigmaFrame frameNode)
+            if (currentNode.Node is not RectangleVector rectangleVector)
             {
                 return string.Empty;
             }
@@ -20,17 +20,17 @@ namespace FigmaSharp.Maui.Graphics.Converters
 
             builder.AppendLine("canvas.SaveState();");
 
-            var bounds = frameNode.absoluteBoundingBox;
-            var cornerRadius = frameNode.cornerRadius;
+            var bounds = rectangleVector.absoluteBoundingBox;
+            float[] rectangleCornerRadii = rectangleVector.rectangleCornerRadii;
 
             NumberFormatInfo nfi = new NumberFormatInfo
             {
                 NumberDecimalSeparator = "."
             };
 
-            if (frameNode.HasFills)
+            if (rectangleVector.HasFills)
             {
-                var backgroundPaint = frameNode.fills.FirstOrDefault();
+                var backgroundPaint = rectangleVector.fills.FirstOrDefault();
 
                 if (backgroundPaint != null && backgroundPaint.visible)
                 {
@@ -50,13 +50,19 @@ namespace FigmaSharp.Maui.Graphics.Converters
                     if (backgroundPaint.imageRef != null)
                         builder.AppendLine($"canvas.FillColor  = Colors.White;");
 
-                    builder.AppendLine(string.Format($"canvas.FillRoundedRectangle({bounds.X.ToString(nfi)}f, {bounds.Y.ToString(nfi)}f, {bounds.Width.ToString(nfi)}f, {bounds.Height.ToString(nfi)}f, {cornerRadius});"));
+                    if (rectangleCornerRadii != null)
+                        builder.AppendLine(string.Format($"canvas.FillRoundedRectangle({bounds.X.ToString(nfi)}f, {bounds.Y.ToString(nfi)}f, {bounds.Width.ToString(nfi)}f, {bounds.Height.ToString(nfi)}f, {rectangleCornerRadii[0].ToString(nfi)}f, {rectangleCornerRadii[1].ToString(nfi)}f, {rectangleCornerRadii[2].ToString(nfi)}f, {rectangleCornerRadii[3].ToString(nfi)}f);"));
+                    else
+                    {
+                        var cornerRadius = rectangleVector.cornerRadius;
+                        builder.AppendLine(string.Format($"canvas.FillRoundedRectangle({bounds.X.ToString(nfi)}f, {bounds.Y.ToString(nfi)}f, {bounds.Width.ToString(nfi)}f, {bounds.Height.ToString(nfi)}f, {cornerRadius.ToString(nfi)}f);"));
+                    }
                 }
             }
 
-            if (frameNode.HasStrokes)
+            if (rectangleVector.HasStrokes)
             {
-                var strokePaint = frameNode.fills.FirstOrDefault();
+                var strokePaint = rectangleVector.strokes.FirstOrDefault();
 
                 if (strokePaint != null && strokePaint.visible)
                 {
@@ -75,12 +81,18 @@ namespace FigmaSharp.Maui.Graphics.Converters
 
                     if (strokePaint.imageRef != null)
                         builder.AppendLine($"canvas.StrokeColor  = Colors.White;");
+
+                    var strokeSize = rectangleVector.strokeWeight;
+                    builder.AppendLine($"canvas.StrokeSize  = {strokeSize};");
+
+                    if (rectangleCornerRadii != null)
+                        builder.AppendLine(string.Format($"canvas.DrawRoundedRectangle({bounds.X.ToString(nfi)}f, {bounds.Y.ToString(nfi)}f, {bounds.Width.ToString(nfi)}f, {bounds.Height.ToString(nfi)}f, {rectangleCornerRadii[0].ToString(nfi)}f, {rectangleCornerRadii[1].ToString(nfi)}f, {rectangleCornerRadii[2].ToString(nfi)}f, {rectangleCornerRadii[3].ToString(nfi)}f);"));
+                    else
+                    {
+                        var cornerRadius = rectangleVector.cornerRadius;
+                        builder.AppendLine(string.Format($"canvas.DrawRoundedRectangle({bounds.X.ToString(nfi)}f, {bounds.Y.ToString(nfi)}f, {bounds.Width.ToString(nfi)}f, {bounds.Height.ToString(nfi)}f, {cornerRadius.ToString(nfi)}f);"));
+                    }
                 }
-
-                var strokeSize = frameNode.strokeWeight;
-                builder.AppendLine($"canvas.StrokeSize  = {strokeSize};");
-
-                builder.AppendLine(string.Format($"canvas.DrawRoundedRectangle({bounds.X.ToString(nfi)}f, {bounds.Y.ToString(nfi)}f, {bounds.Width.ToString(nfi)}f, {bounds.Height.ToString(nfi)}f, {cornerRadius});"));
             }
 
             builder.AppendLine("canvas.RestoreState();");
@@ -93,12 +105,7 @@ namespace FigmaSharp.Maui.Graphics.Converters
             throw new NotImplementedException();
         }
 
-        public override Type GetControlType(FigmaNode currentNode)
+        public override Type GetControlType(FigmaNode currentNode)    
             => typeof(View);
-
-        /*
-        public override bool ScanChildren(FigmaNode currentNode)
-            => true;
-        */
     }
 }

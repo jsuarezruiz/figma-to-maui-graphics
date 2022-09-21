@@ -112,24 +112,32 @@
                 </Grid>
             </Border>
             <!-- PREVIEWER -->
-            <!--
-            <Grid 
+            <Border
                 Grid.Column="2"
-                RowDefinitions="Auto, *">
-                <Label 
-                    Text="Previewer"
-                    Style="{StaticResource HeaderTextStyle}"/>
-                <GraphicsView
-                    Style="{StaticResource PreviewerStyle}"/>
-            </Grid>
-            -->
+                Style="{StaticResource FigmaBorderStyle}"
+                IsVisible="False">
+                <Grid 
+                    RowDefinitions="Auto, *">
+                    <Label 
+                        Text="Previewer"
+                        Style="{StaticResource HeaderTextStyle}"/>
+                    <GraphicsView
+                        Grid.Row="1"
+                        Style="{StaticResource PreviewerStyle}"/>
+                </Grid>
+            </Border> 
             <!-- OUTPUT -->
             <Border     
                 Grid.Row="1"
-                Grid.ColumnSpan="2"
+                Grid.ColumnSpan="3"
                 Style="{StaticResource FigmaBorderStyle}">
-                <Grid>
+                <Grid 
+                    RowDefinitions="Auto, *">
+                    <Label 
+                        Text="Output"
+                        Style="{StaticResource HeaderTextStyle}"/>
                     <ListView
+                        Grid.Row="1"
                         ItemsSource="{Binding Log}"
                         Style="{StaticResource LogListStyle}"/>
                 </Grid>

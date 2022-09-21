@@ -1,6 +1,8 @@
 ﻿using FigmaSharp.Converters;
+using FigmaSharp.Maui.Graphics.Extensions;
 using FigmaSharp.Models;
 using FigmaSharp.Services;
+using System.Globalization;
 using System.Text;
 
 namespace FigmaSharp.Maui.Graphics.Converters
@@ -13,19 +15,69 @@ namespace FigmaSharp.Maui.Graphics.Converters
             {
                 return string.Empty;
             }
-            
+           
             StringBuilder builder = new StringBuilder();
 
             builder.AppendLine("canvas.SaveState();");
 
-            if (elipseNode.strokeWeight != 0)
-            {
-                var strokeSize = elipseNode.strokeWeight;
-                builder.AppendLine($"canvas.StrokeSize = {strokeSize};");
-            }
-                
             var bounds = elipseNode.absoluteBoundingBox;
-            builder.AppendLine(string.Format($"canvas.DrawEllipse({bounds.X}, {bounds.Y}, {bounds.Width}, {bounds.Height});"));
+
+            NumberFormatInfo nfi = new NumberFormatInfo
+            {
+                NumberDecimalSeparator = "."
+            };
+
+            if (elipseNode.HasFills)
+            {
+                var backgroundPaint = elipseNode.fills.FirstOrDefault();
+
+                if (backgroundPaint != null && backgroundPaint.visible)
+                {
+                    if (backgroundPaint.color != null)
+                    {
+                        builder.AppendLine($"canvas.FillColor  = {backgroundPaint.color.ToCodeString()};");
+                    
+                        builder.AppendLine($"canvas.Alpha  = {backgroundPaint.color.A};");
+                    }
+
+                    if (backgroundPaint.gradientStops != null)
+                        builder.AppendLine($"canvas.FillColor  = Colors.White;");
+
+                    if (backgroundPaint.imageRef != null)
+                        builder.AppendLine($"canvas.FillColor  = Colors.White;");
+
+                    builder.AppendLine(string.Format($"canvas.FillEllipse({bounds.X.ToString(nfi)}f, {bounds.Y.ToString(nfi)}f, {bounds.Width.ToString(nfi)}f, {bounds.Height.ToString(nfi)}f);"));
+                }
+            }
+
+            if (elipseNode.HasStrokes)
+            {
+                var strokePaint = elipseNode.strokes.FirstOrDefault();
+
+                if (strokePaint.color != null)
+                {
+                    builder.AppendLine($"canvas.StrokeColor  = {strokePaint.color.ToCodeString()};");
+
+                    builder.AppendLine($"canvas.Alpha  = {strokePaint.color.A};");
+                }
+
+                if (strokePaint.gradientStops != null)
+                {
+                    strokePaint.gradientStops.ToCodeString();
+                    builder.AppendLine($"canvas.StrokeColor  = Colors.White;");
+                }
+
+                if (strokePaint.imageRef != null)
+                    builder.AppendLine($"canvas.StrokeColor  = Colors.White;");
+
+                if (elipseNode.strokeWeight != 0)
+                {
+                    var strokeSize = elipseNode.strokeWeight;
+                    builder.AppendLine($"canvas.StrokeSize = {strokeSize};");
+                }
+
+                builder.AppendLine(string.Format($"canvas.DrawEllipse({bounds.X.ToString(nfi)}f, {bounds.Y.ToString(nfi)}f, {bounds.Width.ToString(nfi)}f, {bounds.Height.ToString(nfi)}f);"));
+            }
 
             builder.AppendLine("canvas.RestoreState();");
 
@@ -37,6 +89,7 @@ namespace FigmaSharp.Maui.Graphics.Converters
             throw new NotImplementedException();
         }
 
-        public override Type GetControlType(FigmaNode currentNode) => typeof(View);
+        public override Type GetControlType(FigmaNode currentNode)
+            => typeof(View);
     }
 }

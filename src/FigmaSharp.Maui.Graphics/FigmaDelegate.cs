@@ -29,8 +29,10 @@ namespace FigmaSharp.Maui.Graphics
         {
             return new NodeConverter[]{
                 new ElipseConverter(),
-                new FrameConverter(),
+                new FrameConverter(),  
+                new ImageConverter(),
                 new LineConverter(),
+                new RectangleConverter(),
                 new TextConverter()
             };
         }

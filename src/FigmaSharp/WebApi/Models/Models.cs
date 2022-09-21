@@ -501,6 +501,13 @@ namespace FigmaSharp.Models
 
     public class ColorStop
     {
+        [Category("General")]
+        [DisplayName("Type")]
+        public int position { get; set; }
+
+        [Category("General")]
+        [DisplayName("Color")]
+        public Color color { get; set; }
     }
 
     public class FigmaConstraint
