@@ -5,28 +5,22 @@ using System.Text;
 
 namespace FigmaSharp.Maui.Graphics.Converters
 {
-    internal class ImageConverter : NodeConverter
+    internal class PolygonConverter : RegularPolygonConverterBase
     {
-        public override bool CanConvert(FigmaNode currentNode)
-            => currentNode.GetType() == typeof(FigmaVector);
-
         public override string ConvertToCode(CodeNode currentNode, CodeNode parentNode, ICodeRenderService rendererService)
         {
-            if (currentNode.Node is not IFigmaImage figmaImage)
+            if (currentNode.Node is not FigmaRegularPolygon figmaPolygon)
             {
                 return string.Empty;
             }
 
             StringBuilder builder = new StringBuilder();
 
-            if (figmaImage.HasImage())
-            {
-                builder.AppendLine("canvas.SaveState();");
+            builder.AppendLine("canvas.SaveState();");
 
-                // TODO: Render Image
+            // TODO: Render Polygon
 
-                builder.AppendLine("canvas.RestoreState();");
-            }
+            builder.AppendLine("canvas.RestoreState();");
 
             return builder.ToString();
         }
@@ -36,7 +30,7 @@ namespace FigmaSharp.Maui.Graphics.Converters
             throw new NotImplementedException();
         }
 
-        public override Type GetControlType(FigmaNode currentNode) 
+        public override Type GetControlType(FigmaNode currentNode)
             => typeof(View);
     }
 }

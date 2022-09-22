@@ -32,6 +32,7 @@ namespace FigmaSharp.Maui.Graphics
                 new FrameConverter(),  
                 new ImageConverter(),
                 new LineConverter(),
+                new PolygonConverter(),
                 new RectangleConverter(),
                 new TextConverter()
             };

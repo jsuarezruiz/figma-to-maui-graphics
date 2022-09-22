@@ -32,7 +32,7 @@ namespace FigmaSharp.Maui.Graphics.Converters
                 if (textPaint.color != null)
                 {
                     builder.AppendLine($"canvas.FontColor  = {textPaint.color.ToCodeString()};");
-
+                    
                     builder.AppendLine($"canvas.Alpha  = {textPaint.color.A};");
                 }
             }
@@ -41,14 +41,19 @@ namespace FigmaSharp.Maui.Graphics.Converters
 
             if (textStyle != null)
             {
+                builder.AppendLine($"canvas.Font = {textStyle.ToCodeString()};");
+
                 var fontSize = textStyle.fontSize;
                 builder.AppendLine($"canvas.FontSize = {fontSize}f;");
             }
 
             var bounds = textNode.absoluteBoundingBox;
-            string text = textNode.name;
+            string text = textNode.characters ?? textNode.name;
 
-            builder.AppendLine($"canvas.DrawString(\"{text}\", {bounds.X.ToString(nfi)}f, {bounds.Y.ToString(nfi)}f, {bounds.Width.ToString(nfi)}f, {bounds.Height.ToString(nfi)}f, HorizontalAlignment.Left, VerticalAlignment.Top);");
+            var horizontalAlignment = textNode.constraints.horizontal;
+            var verticalAlignment = textNode.constraints.vertical;
+
+            builder.AppendLine($"canvas.DrawString(@\"{text}\", {bounds.X.ToString(nfi)}f, {bounds.Y.ToString(nfi)}f, {bounds.Width.ToString(nfi)}f, {bounds.Height.ToString(nfi)}f, {horizontalAlignment.ToHorizontalAignment()}, {verticalAlignment.ToVerticalAlignment()});");
 
             builder.AppendLine("canvas.RestoreState();");
 

@@ -42,10 +42,7 @@ namespace FigmaSharp.Maui.Graphics.Converters
                     }
 
                     if (backgroundPaint.gradientStops != null)
-                    {
-                        backgroundPaint.gradientStops.ToCodeString();
-                        builder.AppendLine($"canvas.FillColor  = Colors.White;");
-                    }
+                        builder.AppendLine($"canvas.SetFillPaint({backgroundPaint.gradientStops.ToCodeString()}, dirtyRect);");
 
                     if (backgroundPaint.imageRef != null)
                         builder.AppendLine($"canvas.FillColor  = Colors.White;");
