@@ -16,6 +16,8 @@ You can copy and paste the code or export it directly to a file.
 
 **NOTE**: This project uses and extends [FigmaSharp](https://github.com/microsoft/FigmaSharp).
 
+Remember, this tool generates C# code for .NET MAUI Graphics, NOT XAML or C# code using .NET MAUI Views.
+
 # Getting started
 
 To get documents from [figma.com](https://www.figma.com/) you'll need to generate a **Personal Access Token**.
