@@ -24,6 +24,11 @@ This will be your only chance to copy the token, so make sure you keep a copy in
 
 Do you have questions, need support, or want to contribute? Use GitHub [Issues](https://github.com/jsuarezruiz/figma-to-maui-graphics/issues) for bug reports and feature requests.
 
+## Known limitations or issues
+
+- Currently, due to changes required in .NET MAUI Graphics or FigmaSharp, the tool does not generate [vectors](https://github.com/jsuarezruiz/figma-to-maui-graphics/issues/2) or [custom fonts](https://github.com/jsuarezruiz/figma-to-maui-graphics/issues/1).
+- Although it is something that will be fixed shortly, currently you need to set the root node in Figma to position 0, 0.
+
 ## Copyright and license
 
 Code released under the [MIT license](https://opensource.org/licenses/MIT).
