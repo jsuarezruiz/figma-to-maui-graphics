@@ -1,1 +1,29 @@
 # From Figma to .NET MAUI Graphics
+
+**FigmaSharp.Maui.Graphics** turns your Figma design into .NET MAUI Graphics code. Free and Open Source software under the MIT LICENSE.
+
+![Replicate qiuickly nice designs](images/figma-to-maui-graphics-01.png)
+
+![Create new drawn controls](images/figma-to-maui-graphics-02.png)
+
+The tool available on Windows and macOS performs the following steps:
+1. Using a Personal Access Token accesses a Figma document.
+2. Get all the information and creates a hierarchy of nodes that we can go iterate or manipulate.
+3. After getting the nodes, it generates C# code for [.NET MAUI Graphics](https://github.com/dotnet/Microsoft.Maui.Graphics).
+4. After generating the code, it compiles the code to ensure that there are no generation errors.
+
+You can copy and paste the code or export it directly to a file.
+
+**NOTE**: This project uses and extends [FigmaSharp](https://github.com/microsoft/FigmaSharp).
+
+# Getting started
+
+To get documents from [figma.com](https://www.figma.com/) you'll need to generate a **Personal Access Token**.
+Sign in to Figma and in the main menu, go to **Help and Account  →  Account Settings** and select **Create new token**.
+This will be your only chance to copy the token, so make sure you keep a copy in a secure place.
+
+Do you have questions, need support, or want to contribute? Use GitHub [Issues](https://github.com/jsuarezruiz/figma-to-maui-graphics/issues) for bug reports and feature requests.
+
+## Copyright and license
+
+Code released under the [MIT license](https://opensource.org/licenses/MIT).
