@@ -50,8 +50,8 @@ namespace FigmaSharp.Maui.Graphics.Converters
             var bounds = textNode.absoluteBoundingBox;
             string text = textNode.characters ?? textNode.name;
 
-            var horizontalAlignment = textNode.constraints.horizontal;
-            var verticalAlignment = textNode.constraints.vertical;
+            var horizontalAlignment = textNode.style.textAlignHorizontal;
+            var verticalAlignment = textNode.style.textAlignVertical;
 
             builder.AppendLine($"canvas.DrawString(@\"{text}\", {bounds.X.ToString(nfi)}f, {bounds.Y.ToString(nfi)}f, {bounds.Width.ToString(nfi)}f, {bounds.Height.ToString(nfi)}f, {horizontalAlignment.ToHorizontalAignment()}, {verticalAlignment.ToVerticalAlignment()});");
 
