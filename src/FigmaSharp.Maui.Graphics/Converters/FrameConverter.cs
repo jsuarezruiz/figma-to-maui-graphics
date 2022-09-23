@@ -47,7 +47,7 @@ namespace FigmaSharp.Maui.Graphics.Converters
                     if (backgroundPaint.imageRef != null)
                         builder.AppendLine($"canvas.FillColor  = Colors.White;");
 
-                    builder.AppendLine(string.Format($"canvas.FillRoundedRectangle({bounds.X.ToString(nfi)}f, {bounds.Y.ToString(nfi)}f, {bounds.Width.ToString(nfi)}f, {bounds.Height.ToString(nfi)}f, {cornerRadius});"));
+                    builder.AppendLine(string.Format($"canvas.FillRoundedRectangle({bounds.X.ToString(nfi)}f, {bounds.Y.ToString(nfi)}f, {bounds.Width.ToString(nfi)}f, {bounds.Height.ToString(nfi)}f, {cornerRadius.ToString(nfi)}f);"));
                 }
             }
 
@@ -77,7 +77,7 @@ namespace FigmaSharp.Maui.Graphics.Converters
                 var strokeSize = frameNode.strokeWeight;
                 builder.AppendLine($"canvas.StrokeSize  = {strokeSize};");
 
-                builder.AppendLine(string.Format($"canvas.DrawRoundedRectangle({bounds.X.ToString(nfi)}f, {bounds.Y.ToString(nfi)}f, {bounds.Width.ToString(nfi)}f, {bounds.Height.ToString(nfi)}f, {cornerRadius});"));
+                builder.AppendLine(string.Format($"canvas.DrawRoundedRectangle({bounds.X.ToString(nfi)}f, {bounds.Y.ToString(nfi)}f, {bounds.Width.ToString(nfi)}f, {bounds.Height.ToString(nfi)}f, {cornerRadius.ToString(nfi)}f);"));
             }
 
             builder.AppendLine("canvas.RestoreState();");
