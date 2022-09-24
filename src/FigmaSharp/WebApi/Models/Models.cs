@@ -553,12 +553,15 @@ namespace FigmaSharp.Models
 
     public class FigmaPath
     {
+        [DisplayName("Path")]
+        public string path { get; set; }
 
+        [DisplayName("WindingRule")]
+        public string WindingRule { get; set; }
     }
 
-    public class FigmaTransform
+    public class FigmaTransform : List<List<double>>
     {
-        //public int[][] data { get; set; }
     }
 
     public class FigmaEffect
@@ -684,7 +687,7 @@ namespace FigmaSharp.Models
 
         [Category ("General")]
         [DisplayName ("Font Size")]
-        public int fontSize { get; set; }
+        public double fontSize { get; set; }
 
         [Category ("General")]
         [DisplayName ("TextAlignHorizontal")]

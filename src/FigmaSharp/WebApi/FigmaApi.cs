@@ -134,7 +134,7 @@ namespace FigmaSharp
 			client.DefaultRequestHeaders.Add ("Accept", "application/json");
             client.DefaultRequestHeaders.Add("x-figma-token", token);
 
-			var response = await client.GetAsync(query);
+			var response = await client.GetAsync(query + "?geometry=paths");
 			var content = await response.Content.ReadAsStringAsync();
 		
 			var json = Newtonsoft.Json.Linq.JObject.Parse(content);
