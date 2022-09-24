@@ -41,7 +41,13 @@ namespace FigmaSharp.Maui.Graphics.Converters
                     }
 
                     if (backgroundPaint.gradientStops != null)
-                        builder.AppendLine($"canvas.SetFillPaint({backgroundPaint.gradientStops.ToCodeString()}, dirtyRect);");
+                    {
+                        if (backgroundPaint.type.Equals("GRADIENT_LINEAR", StringComparison.CurrentCultureIgnoreCase))
+                            builder.AppendLine($"canvas.SetFillPaint({backgroundPaint.gradientStops.ToLinearGradientPaint()}, new RectF({bounds.X.ToString(nfi)}f, {bounds.Y.ToString(nfi)}f, {bounds.Width.ToString(nfi)}f, {bounds.Height.ToString(nfi)}f));");
+
+                        if (backgroundPaint.type.Equals("GRADIENT_RADIAL", StringComparison.CurrentCultureIgnoreCase))
+                            builder.AppendLine($"canvas.SetFillPaint({backgroundPaint.gradientStops.ToRadialGradientPaint()}, new RectF({bounds.X.ToString(nfi)}f, {bounds.Y.ToString(nfi)}f, {bounds.Width.ToString(nfi)}f, {bounds.Height.ToString(nfi)}f));");
+                    }
 
                     if (backgroundPaint.imageRef != null)
                         builder.AppendLine($"canvas.FillColor  = Colors.White;");
@@ -63,8 +69,11 @@ namespace FigmaSharp.Maui.Graphics.Converters
 
                 if (strokePaint.gradientStops != null)
                 {
-                    strokePaint.gradientStops.ToCodeString();
-                    builder.AppendLine($"canvas.StrokeColor  = Colors.White;");
+                    if (strokePaint.type.Equals("GRADIENT_LINEAR", StringComparison.CurrentCultureIgnoreCase))
+                        builder.AppendLine($"canvas.SetFillPaint({strokePaint.gradientStops.ToLinearGradientPaint()}, new RectF({bounds.X.ToString(nfi)}f, {bounds.Y.ToString(nfi)}f, {bounds.Width.ToString(nfi)}f, {bounds.Height.ToString(nfi)}f));");
+
+                    if (strokePaint.type.Equals("GRADIENT_RADIAL", StringComparison.CurrentCultureIgnoreCase))
+                        builder.AppendLine($"canvas.SetFillPaint({strokePaint.gradientStops.ToRadialGradientPaint()}, new RectF({bounds.X.ToString(nfi)}f, {bounds.Y.ToString(nfi)}f, {bounds.Width.ToString(nfi)}f, {bounds.Height.ToString(nfi)}f));");
                 }
 
                 if (strokePaint.imageRef != null)
