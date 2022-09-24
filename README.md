@@ -4,7 +4,7 @@
 
 ![Replicate quickly nice designs](https://raw.githubusercontent.com/jsuarezruiz/figma-to-maui-graphics/main/images/figma-to-maui-graphics-01.PNG)
 
-![Replicate quickly nice designs](https://raw.githubusercontent.com/jsuarezruiz/figma-to-maui-graphics/main/images/figma-to-maui-graphics-03.PNG)
+![Replicate quickly nice designs](https://raw.githubusercontent.com/jsuarezruiz/figma-to-maui-graphics/main/images/figma-to-maui-graphics-03.png)
 
 ![Create new drawn controls](https://raw.githubusercontent.com/jsuarezruiz/figma-to-maui-graphics/main/images/figma-to-maui-graphics-02.PNG)
 
